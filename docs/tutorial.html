@@ -1,0 +1,525 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" type="text/css" href="style.css">
+    <title>Tursi - Tutorial</title>
+  </head>
+  <body>
+    <div class="menu">
+      <div class="menuStripe"></div>
+      <a id="menuLogo" href="index.html">
+        <img src="img/logo.png" alt="Tursi logo">
+      </a>
+      <a class="menu" id="menuTutorial"  href="tutorial.html">Tutorial</a>
+      <a class="menu" id="menuFAQ"       href="faq.html">FAQ</a>
+      <a class="menu" id="menuManual"    href="manual.html">Manual</a>
+      <a class="menu" id="menuDownloads" href="downloads.html">Downloads</a>
+      <a class="menu" id="menuContact"   href="contact.html">Contact</a>
+    </div>
+    <div class="page">
+      <h1>Tutorial</h1>
+      <p>
+        This is an introduction to Tursi. You will learn how to write
+        tm-files, load and execute them using the GUI or console mode.
+      </p><p>
+        If you want to use Tursi as soon as possible, I recommend to skip this
+        tutorial and download the <a href="downloads.html">tm-file examples</a>
+        instead. Most things should be self-explanatory. If you don't get
+        everything, you can always search this tutorial or the manual for an
+        explanation.
+      </p>
+
+      <h2>Turing machines</h2>
+      <p>
+        This is not a tutorial for turing machines (abbreviated <i>tm</i>).
+        If you don't know, what a turing machine is or how it works, you have
+        to inform you elsewhere. 
+      </p><p>
+        However there are many different definitions of turing machines, so it
+        has to be described, which one we use:
+      </p><p>
+        Our turing machine has
+      </p>
+      <ul>
+        <li>One tape with cells. There are infinite cells in both directions</li>
+        <li>One header, which moves over the tape and can read and write symbols</li>
+        <li>A set of states, a subset of end states and one initial state</li>
+        <li>A state register, where the current state is stored</li>
+        <li>A deterministic transition function (represented by a table)</li>
+      </ul>
+      <p>
+        A special alphabet is not required. We just use all available symbols.
+      </p><p>
+        The transition function takes the current state and the symbol under the
+        header as input. It returns a further symbol, a direction and a state.
+        Therefore, our table has 5 columns. We call its lines <i>rules</i>. <br>
+        As mentioned above, it must be deterministic. So that there's at most one
+        output for each input. On the other side, you don't have do define an
+        output for every input.
+      </p><p>
+        Our machine starts with the initial state and calls the transition
+        function (basically, it searches the table). The output symbol will be
+        written over the current position. Then, the header will move in the
+        indicated direction (it can also stay, where it was). Finally the
+        current state will be changed. <br>
+        This steps are repeated, until no rule for the current state and symbol
+        under the header was found or an end state was reached.
+      </p><p>
+        When the machine has stopped, you can read what it wrote on the tape
+        and in which state it ended. Tursi just executes the machine and does
+        not validate the result - you have to decide, if your machine did
+        the right thing.
+      </p>
+      
+      <h3>Cell numbers</h3>
+      <p>
+        Normally the cells on the tape aren't numbered, but we will number them,
+        because it's easier to talk about <i>cell n</i> instead of <i>the cell,
+        which lies n cells to right of the initial header position</i>. <br>
+      </p><p>
+        0 is the cell where the header was, as we started the turing machine.
+        We count upwards, when moving right and backwards when moving left.
+      </p>
+
+      <h2>Writing a tm-file</h2>
+      <p>
+        Tursi is not designed, to create and edit turing machines. So you will
+        need a simple text editor (not word!) to write a tm-file, which
+        describes a turing machine and can be loaded into Tursi.
+      </p><p>
+        If you use GEdit, you may want to install <u>tm.lang</u>
+        (see <a href="downloads.html">Downloads</a>) to enable syntax highlighting.
+      </p><p>
+        a tm-file is basically the transition table, but it can also contain
+        comments and commands. Here's an example:
+      </p><p class="code">
+        # this is a comment<br>
+        <br>
+        # the following 3 lines are commands<br>
+        #! start s<br>
+        #! end e0 e1<br>
+        #! fill *<br>
+        <br>
+        # Now we specify some rules<br>
+        s 0 0 R s<br>
+        s 1 0 R q<br>
+        s * * N e0<br>
+        q 0 0 R q<br>
+        q 1 0 R q<br>
+        q * * N e1<br>
+      </p><p>
+        This is a turing machine, with 4 states - 2 of them (<u>e0</u> and
+        <u>e1</u>) are end states. It starts in state <u>s</u> on a tape, filled
+        with <u>*</u>. When you open this tm in Tursi, write a binary number onto
+        the tape and execute the machine. It replaces every <u>1</u> with a <u>0</u>
+        and stops when reaching the end of the word. If it stopped in <u>e0</u>,
+        the word contained no <u>1</u>.
+      </p><p class="warning">
+        The tm format is case-sensitive! So <u>q</u> is another state
+        than <u>Q</u>.
+      </p>
+      <h3>Comments</h3>
+      <p>
+        A comment starts with <u>#</u> and ends at the
+        end of the line. If you want to use the symbol # in your machine, you have
+        to escape it - just write <u>##</u>.
+        So <u>###...</u> would be a #, followed by a comment.
+        <u>####</u> would be ## and so on.
+        <br>
+        This may be a little confusing, but it's easy to type and we don't need
+        a special escape character, which then also had to be escaped. <br>
+      </p>
+      <h3>Commands</h3>
+      <p>
+        A command starts with <u>#!</u> and ends at the next command, comment or
+        line end. <br>
+        Even though it begins with <u>#</u>, it's not a comment! This is not very
+        beautiful, but guarantees compatibility to the old format, which did not
+        know commands. <br>
+        The first word after this sequence is interpreted as the command name,
+        all further words will be passed to this command as arguments (you probably
+        expected that, if you ever used a shell like bash). <br>
+      </p><p>
+        Commands are not mandatory, but Tursi will complain, when it has to
+        guess vital informations like the start state, end states or default
+        tape content.<br>
+        The most important commands are
+      </p>
+      <ul>
+        <li>
+          <u>start &lt;initial state&gt;</u><br>
+          Lets you specify <i>one</i> initial state.
+        </li>
+        <li>
+          <u>end [&lt;end state&gt;] ...</u><br>
+          Lets you specify as many end states as you want (even 0).<br>
+          Multiple calls will mix with a logical OR.
+        </li>
+        <li>
+          <u>fill &lt;default tape content&gt;</u><br>
+          Lets you specify the default content for the tape, which will be
+          looped to infinity. <br>
+          Do not use this when you want to write just one word! There are better
+          solutions (e.g. the <u>write</u>-command or the
+          graphical user interface).
+        </li>
+      </ul>
+      <p>
+        If you always use these three commands, you're on the safe side.
+      </p><p>
+        Here, we used <u>*</u> as fill, because the real space
+        is used for separating the components of a tm-file. Therefore, it cannot
+        be interpreted differently. <br>
+        If you really want to use a space, you could use a non-breaking space.
+        However, it's not recommended, since you wouldn't be able to keep it apart
+        from a normal space or even an empty part of your file.
+      </p>
+      
+      <h3>Rules</h3>
+      <p>
+        Normally, most of your lines are rules.
+        Remember: A rule is a line of your transition table, which has 5 columns
+        (2 input, 3 output). The columns are separated by whitespace (e.g. tab
+        or space) and have to be in the following order:
+      </p>
+      <ol>
+        <li><u>&lt;current state&gt;</u><br>one word</li>
+        <li><u>&lt;read&gt;</u><br>exactly one symbol</li>
+        <li><u>&lt;write&gt;</u><br>exactly one symbol</li>
+        <li>
+          <u>&lt;move&gt;</u><br>a number or an alias
+          <ul>
+            <li>
+              <u>-1</u> or one of <u>lL&lt;</u><br>
+              moves the header one cell to the left
+            </li><li>
+              <u>0</u> or one of <u>nNsS=</u><br>
+              keeps the header on the current position
+            </li><li><u>1</u> or one of <u>rR&gt;</u><br>
+              moves the header one cell to the right
+            </li>
+          </ul>
+        </li>
+        <li><u>&lt;next state&gt;</u><br>one word</li>
+      </ol>
+      <p>
+        Keep in mind, that the turing machine has to be deterministic. This means,
+        all rules must be distinguishable by their first two columns (the input
+        of the transition function).
+      </p>
+
+      <h2>Using the graphical user interface</h2>
+      <p>
+        When you have a tm-file, you can execute it. To do so, we use Tursi's
+        GUI.
+      </p><p>
+        Open Tursi, then open your tm-file. If your tm-file is flawless, you
+        will see your transition table on the left.
+      </p>
+      
+      <h3>Modify the tape</h3>
+      <p>
+        Before you execute your turing machine, you likely want to write something
+        onto the tape. To do so, use the top text field on the the right.
+        Write something and then press enter. You can modify the position, where
+        your text is written to, by changing the number underneath. <br>
+        To reset the tape, click the top right button with the tape roll on it.
+      </p>
+      
+      <h3>Execute the machine</h3>
+      <p>
+        Now let your machine take its first step. To manually step forwards,
+        click the right footprint button. You can also use the
+        right arrow key (click onto the tape, to make sure, that no text field has
+        the keyboard focus).<br>
+        After each step, the executed rule pops up in history. You can undo steps
+        from the history. Click on the left footprint button or use the left
+        arrow key.
+      </p><p>
+        Instead of clicking a button for every step, you can run your machine.
+        Click on the play button (green triangle arrow) or use the space bar.
+        Stop it with the same button or key.
+        Speed it up or down, using the slider on the right. This changes the
+        pause time between every step.<br>
+      </p><p class="warning">
+        Some window managers show a number on the slider. This is not the pause
+        time! That's because the slider has a quadratic scale (smaller values
+        can be set with more precision). The real pause time is displayed in
+        a tooltip (move your mouse over the slider and stand still).
+      </p>
+      
+      <h3>Reseting</h3>
+      <p>
+        Reseting is split into two functions: Reseting the machine to the start
+        state (left button with the purple triangle arrow) and reseting the tape
+        (top right button with the tape roll).
+      </p><p>
+        Say, you have a program, that increments a number and stops, where it
+        has started. You can reset the state, but keep the tape for each run to
+        increment your number multiple times.<br>
+        In this scenario, you wouldn't even have to reset at all. Tursi
+        automatically resets the state, when the machine is in an end state
+        and is executed again (see File/Preferences/"Reset when starting from
+        end state").<br>
+      </p><p>  
+        If you want to reset both, the state and the tape, you can also reload
+        your file (use File/Reload or press ctrl+R).
+      </p>
+      
+      <h3>Scrolling the tape</h3>
+      <p>
+        When working with turing machines, that read or write long words, your
+        tape will not fit into the window. In such cases Tursi can follow the
+        header as it moves. You can also  scroll manually with your cursor.
+        Hold and drag the tape or make use of your mouse wheel.<br>
+        You can change between manual and two different automatic scroll modes.
+        Just press one of the three buttons on the top right.
+      </p><p>
+        There are four special cells, which are marked in the tape viewer.
+        The cell under the header, the leftmost and rightmost cell ever accessed
+        and the cell, where the header has started (0).
+        To jump to one of them, click onto the according labels down right.
+      </p>
+      
+      <h3>Speeding things up</h3>
+      <p>
+        Some turing machines can make thousands of steps before they stop.
+        Even with full speed (0&thinsp;ms pause time), you might have to wait
+        long for them to finish.<br>
+        Like the graphic settings of a video game, Tursi offers options that
+        reduce or disable graphical features, but relief your system. Most of
+        them are in the category View of the menu bar. The more you disable,
+        the faster your machine will run.<br>
+        When you don't want to disable the tape viewer, you can make your window
+        narrow, so that less tape is drawn. You can also increase the frame length.
+        This is the delay for repainting, after the tape was changed. The higher,
+        the more changes can be packed into one repaint, but your tape will begin
+        to stutter. You can set the frame length under  File/Preferences.
+        The highest frame length is limited to 1000&thinsp;ms.<br>
+      </p><p>
+        For very long running turing machines, you're better off using the
+        console mode.
+      </p>
+      
+      <h2>Using the console mode</h2>
+      <p>
+        Another (and faster) way to execute your tm-file is Turi's console mode.
+        This mode is not interactive - Tursi just runs your machine once and
+        terminates.
+      </p>
+      
+      <h3>The write command</h3>
+      <p>
+        Since you won't be able to modify the tape in console mode, you have
+        to use the <u>write</u> command in your tm-file. It writes something onto
+        the tape, before the machine is executed. The machine is not affected by
+        this command (especially the header does not move).
+      </p><p>
+        You can use <u>write</u> multiple times or even write multiple times
+        with only one call of <u>write</u>. The commands will be executed in the
+        order they were called.<br>
+      </p>
+      <p>
+        The command comes in two forms:
+      </p>
+      <ul>
+        <li><u>write &lt;word&gt;</u><br>
+          Writes the specified word from left to right onto the tape, starting
+          from the cell 0 (where the header is on startup).<br>
+        </li>
+        <li><u>write &lt;position&gt; &lt;word&gt; [...]</u><br>
+          Writes the word starting from the specified position (an integer).
+          Positive positions are right to the header and negative ones are left.
+          <br>
+          You can specify as many pairs of positions and words as you like.
+        </li>
+      </ul>
+      <p class="warning">        
+        Keep in mind, that a word can't contain whitespace (space or tab), because
+        this would split it into two arguments. One of them would be interpreted
+        as a position. <br>
+        You also can't simply write <u>#</u>, because this would be a comment.
+        Write <u>##</u> instead, to eascape it.
+      </p><p>
+        Let's have a look at an example:
+      </p><p class="code">
+        # some examples for the write command<br>
+        <br>
+        #! write abcdefgh<br>
+        #! write 0 Z 4 ABCD &nbsp; # now the tape will contain 'ZbcdABCD'<br>
+        #! write ## &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; # and now '#bcdABCD'
+      </p>
+      
+      <h3>Starting the console mode</h3>
+      <p>
+        To start Tursi in console mode, you have to use the console (what a
+        suprise).<br>
+        Note the <u>-c</u> which activates console mode. Remove it to open your
+        file in the GUI.
+      </p><p class="code">
+        java -jar /path/to/tursi.jar /path/to/your/file.tm -c
+
+      </p><p class="warning">
+        Windows users may have to add Java to their PATH variable first.
+      </p><p class="warning">
+        Mac users who have downloaded the app, don't have to download the jar.
+        The app is practically a directory, which includes the jar. You can write
+        <u>Tursi.app/Contents/Resources/Java/Tursi.jar</u>
+      </p><p>
+      </p>
+      
+      <h3>Understanding the output</h3>
+      <p>
+        After your machine was executed, your output may look like this:<br>
+        (let <u class="tab">\t</u> be a tabulator)
+      </p><p class="code">
+        57<u class="tab">\t</u>q<br>
+        <u class="tab"> &nbsp; \t</u>tape (-3, 11, 7), header 4<br>
+        <u class="tab"> &nbsp; \t</u>xyz<br>
+        <u class="tab"> &nbsp; \t</u>abcdefgh
+      </p><p>
+        This means, after <u>57</u> steps, your machine reached state <u>q</u>.
+        At this time, the leftmost cell ever accessed was <u>-3</u> and the
+        rightmost cell ever accessed was <u>7</u>. Cells that were never reached,
+        will not be printed. So the printed tape contains 11 cells.<br>
+        The header is currently on cell <u>4</u> (reads <u>e</u>, because
+        <u>a</u> is in cell <u>0</u>).<br>
+        The last two lines are the tape. The first is the part left from cell 0.
+        The second is the part from cell on to the right (including cell 0).<br>
+        The tape would look like "<u>xyzabcdefgh</u>" if you used the GUI. But if
+        it was written in one line, you had to count characters and calculate, just
+        to find cell 0. That would be annoying.
+      </p><p>
+      </p>
+      
+      <h3>Modify the output</h3>
+      <p>
+        You can modify when and what Tursi should print. Just append a further
+        argument to the command line, when starting Tursi. 
+      </p><p class="code">
+        java -jar tursi.jar file.tm -c <b>&lt;groups&gt;=&lt;options&gt;</b> [...]
+      </p>
+      <ul>
+        <li><u>&lt;groups&gt;</u> &emsp;One ore more from
+          <ul>
+            <li><u>e</u> &emsp;apply the options to all end states
+            </li>
+            <li><u>b</u> &emsp;apply the options to all break states
+            </li>
+            <li><u>o</u> &emsp;apply the options to every other state
+            </li>
+            <li><u>&lt;number&gt;</u>
+              &emsp;apply the options to every <i>n</i>th step in the execution.
+            </li>
+          </ul>
+        </li>
+        <li><u>&lt;options&gt;</u> &emsp;None, one ore more from
+          <ul>
+            <li><u>s</u> &emsp;Print the step number and current state
+            </li>
+            <li><u>t</u> &emsp;Print the tape (including header position)
+            </li>
+            <li><u>r</u> &emsp;Print the next executed rule (if there is one)
+            </li>
+          </ul>
+        </li>
+      </ul>
+      <p>
+        The defaults are '<u>e=st bo=</u>'.
+      </p><p>
+        If you set options multiple times for one group, only the last one counts.
+        <br>
+        When a state is in multiple groups (e.g. it is a break and an end state),
+        the options from the strongest group will be chosen (<b>e</b>nd &gt;
+        <b>b</b>reak &gt; <b>o</b>ther). Only the <i>n</i>th-step groups mix with
+        other groups (options are combined with a logical OR).
+        <br>
+      </p><p>
+        Lets make an example:
+      </p><p class="code">
+        ebo=str &nbsp; e=st &nbsp; bo= &nbsp; 5000=s &nbsp; 10000=t
+      </p><p>
+        the first part is wasted - all groups are overwritten by other
+        specifications. This makes the example equal to
+      </p><p class="code">
+        e=st &nbsp; b= &nbsp; o= &nbsp; 5000=s &nbsp; 100000=t
+      </p><p>
+        With this options, Tursi will print the number of steps and the tape when
+        it reached an end state. Every 5000 steps, the current state and number
+        of steps are printed and every 100000 steps the tape is printed  (in
+        addition to the steps and the state, because 100000 is a multiple of 5000).
+      </p>
+      
+      <h2>Further commands for tm-files</h2>
+      <p>
+        There are two more commands, which weren't discussed.
+      </p>
+      
+      <h3>Break states</h3>
+      <p>
+        You can define break states. This can be used to stop your run in the GUI when
+        reaching a certain state or to apply print options to only a subset of your
+        states in the console mode.
+      </p><p>
+        To do so, use the command <u>break</u>. It works just like the <u>end</u>
+        command.
+      </p>
+      
+      <h3>Wildcards</h3>
+      <p>
+        <u>wildcard &lt;symbol&gt;</u> defines &lt;symbol&gt; as a wildcard.<br>
+        Only one single symbol can be defined as a wildcard.
+      </p><p>
+        Wildcards can help you writing tm-files faster when you have a lot
+        of similar rules.
+      </p><p class="code">
+        # same output for all inputs<br>
+        q0 a x R q1<br>
+        q0 b x R q1<br>
+        q0 c x R q1<br>
+        ...
+      </p><p>
+        This could be written as
+      </p><p class="code">
+        #! wildcard ?<br>
+        q0 ? x R q1
+      </p><p>
+        The symbol <u>?</u> is now a wildcard and applies to all symbols.
+        When in state <u>q0</u>, the rule will be executed no matter what symbol
+        was read.
+      </p><p>
+        You can also use the wildcard in the write column, where it is
+        interpreted as the symbol, that was read.
+      </p><p class="code">
+        #! wildcard ?<br>
+        q0 a ? R q1 # ? would be an a<br>
+        q1 ? ? R q2 # this rule moves to right, without changing the tape 
+      </p><p>
+        Rules with wildcards will only be executed, if no other rule matches
+        the current state and symbol under the header. You can see it as a
+        fallback.
+      </p><p class="code">
+        #! wildcard ?<br>
+        q0 1 0 R q0<br>
+        q0 0 1 R q0<br>
+        q0 ? ? R qErr # error when something other than 0 or 1 was read
+      </p><p class="warning">
+        Wildcards can only be used in the read and write column of rules.
+        <u>write ?</u> will write a <u>?</u> and "<u>? r w N ?</u>" will be a
+        rule for state <u>?</u>, no matter if <u>?</u> is defined as wildcard
+        or not. 
+      </p>
+    </div>
+  </body>
+</html>
+
+
+
+
+
+
+
+
+

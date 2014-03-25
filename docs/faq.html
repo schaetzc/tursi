@@ -1,0 +1,70 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <link rel="stylesheet" type="text/css" href="style.css">
+    <title>Tursi - FAQ</title>
+  </head>
+  <body>
+    <div class="menu">
+      <div class="menuStripe"></div>
+      <a id="menuLogo" href="index.html">
+        <img src="img/logo.png" alt="Tursi logo">
+      </a>
+      <a class="menu" id="menuTutorial"  href="tutorial.html">Tutorial</a>
+      <a class="menu" id="menuFAQ"       href="faq.html">FAQ</a>
+      <a class="menu" id="menuManual"    href="manual.html">Manual</a>
+      <a class="menu" id="menuDownloads" href="downloads.html">Downloads</a>
+      <a class="menu" id="menuContact"   href="contact.html">Contact</a>
+    </div>
+    <div class="page">
+      <h1>Frequently Asked Questions</h1>
+      
+      <p class="question">
+        How can I open the gml-files from the state diagram exporter?
+      </p><p class="answer">
+        You can open (and edit) gml-files using graph editors like
+        <a href="http://www.yworks.com/en/products_yed_about.html">yEd</a>.<br>
+        Tursi does not export any graphical information. Therefore, some
+        programs draw all vertices (states) on the same position. yEd can
+        align them automatically. Take a look at 'Layout' in the menu bar.
+      </p>
+
+      <p class="question">
+        How can I choose the printed tape section in console mode?
+      </p><p class="answer">
+        There's no direct way to select a tape section in console mode. The
+        printed section will always cover the cells between the leftmost and the
+        rightmost cell.<br>
+        You can use a workaround and set leftmost and rightmost to a guaranteed
+        minimum by moving your header to these cells, before you start your
+        actual turing machine.
+      </p><p class="answer">        
+        Add these lines to your tm-file:
+      </p><p class="answer"><u> 
+        #! start ml &nbsp; &nbsp;# replace your start state<br>
+        #! wildcard ?<br>
+        ml ? ? -10 mr      &nbsp;# leftmost is now -10<br>
+        mr ? ? &nbsp;20 mc &nbsp;# rightmost is now 10 (not 20!)<br>
+        mc ? ? -10 q0      &nbsp;# move back to cell 0<br>
+      </u></p><p class="answer">
+        Replace <u>q0</u> with your old start state and make sure <u>ml</u>,
+        <u>mr</u> and <u>mc</u> do not occur in your actual table.
+      </p>
+      
+      <p class="question">
+        Some menu items are invisible. I'm using Linux Mint and Cinnamon.
+      </p><p class="answer">
+        This is a bug in the GTK theme, which can easily be fixed (click
+        <a href="https://bugs.launchpad.net/linuxmint/+bug/1163030">here</a>).
+      </p>
+      
+      <p class="question">
+        Why is the FAQ so short?
+      </p><p class="answer">
+        I have not received many questions.<br>
+        If you have any, you can <a href="contact.html">send me a mail</a>.
+      </p>
+    </div>
+</html>

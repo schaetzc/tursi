@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Author: Claus Schaetzle -->
+<language id="tm" _name="tm" version="2.0" _section="Test">
+
+  <metadata>
+    <property name="globs">*.tm</property>
+  </metadata>
+
+  <styles>
+    <style id="escaped" _name="Escaped" map-to="def:special-char"/>
+    <style id="command" _name="Command" map-to="def:preprocessor"/>
+    <style id="cmdName" _name="CmdName" map-to="def:keyword"/>
+    <style id="comment" _name="Comment" map-to="def:comment"/>
+    <style id="error"   _name="Error"   map-to="def:error"/>
+  </styles>
+
+  <definitions>
+
+    <context id="esc" extend-parent="true" style-ref="escaped" >
+      <match>##</match>
+    </context>
+
+    <context id="rule">
+      <start>^</start>
+      <end>(?=#|$)</end>
+      <include>
+        <context ref="esc"/>
+      </include>
+    </context>
+
+    <context id="command" style-ref="command">
+      <start>#!</start>
+      <end>(?=#|$)</end>
+      <include>
+        <context ref="esc"/>
+        <context once-only="true" style-ref="cmdName">
+          <match>(?&lt;=#!)\s*(start|break|end|fill|write|wildcard)</match>
+        </context>
+      </include>
+    </context>
+
+    <context id="comment" style-ref="comment">
+      <start>#</start>
+      <end>$</end>
+    </context>
+
+    <context id="tm" class="no-spell-check">
+      <include>
+        <context ref="rule"/>
+        <context ref="command"/>
+        <context ref="comment"/>
+      </include>
+    </context>
+  </definitions>
+
+</language>
