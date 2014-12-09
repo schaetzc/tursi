@@ -3,7 +3,7 @@ package tursi.view;
 import java.awt.*;
 import javax.swing.*;
 
-public class StateCellRenderer implements ListCellRenderer {
+public class StateCellRenderer implements ListCellRenderer<String> {
   
   private RuleCell cell;
   private StateTypeTester tester;
@@ -13,19 +13,19 @@ public class StateCellRenderer implements ListCellRenderer {
   private boolean markBreak;
   private boolean markEnd;
   
-  private JComboBox comboBox;
+  private JComboBox<String> comboBox;
   
-  public StateCellRenderer(JComboBox comboBox, StateTypeTester tester) {
+  public StateCellRenderer(JComboBox<String> comboBox, StateTypeTester tester) {
     this.comboBox = comboBox;
     this.cell = new RuleCell();
     this.tester = tester;
   }
   
   @Override
-  public Component getListCellRendererComponent(JList list, Object value,
+  public Component getListCellRendererComponent(JList<? extends String> list, String value,
       int index, boolean isSelected, boolean cellHasFocus) {
     
-    String st = value == null ? "" : value.toString();
+    String st = value == null ? "" : value;
 
     if (isSelected || comboBox.isPopupVisible() && markCur && tester.isCurrentState(st)) {
       cell.setForeground(list.getSelectionForeground());

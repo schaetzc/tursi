@@ -28,7 +28,7 @@ public class TapeViewer extends JComponent
   private Tape tape;
   /**
    * Number of boxes to the border, when scrolling starts.
-   * This number is the number of boxes between the header (exclusive)
+   * This number is the number of boxes between the head (exclusive)
    * and the border (not visible).
    */
   private int scrollBorder = 2;
@@ -39,7 +39,7 @@ public class TapeViewer extends JComponent
   private final Color fgColor; 
   private final Color bgColorTape;
   private final Color bgColorTapeStripe;
-  private final Color bgColorHeader; 
+  private final Color bgColorHead; 
   
   private final Font  font;
   private final FontMetrics metrics;
@@ -52,7 +52,7 @@ public class TapeViewer extends JComponent
   // Following values will be initialized, when the panel is drawn
   /** First (partially) visible cell. */
   private int firstCell;
-  private int headerBox;
+  private int headBox;
   /** Complete visible cells (+2 partially or not visible cells). */
   private int paintedBoxes;
   /** x-Position of first painted box' left side (<= 0). */
@@ -100,7 +100,7 @@ public class TapeViewer extends JComponent
     fgColor = palette.getForeground();
     bgColorTape = palette.getBackground();
     bgColorTapeStripe = slightlyDarker(bgColorTape);
-    bgColorHeader = Misc.opaque(palette.getSelectionBackground());
+    bgColorHead = Misc.opaque(palette.getSelectionBackground());
     
     font = UIManager.getFont("Table.font");
     metrics = this.getFontMetrics(font);
@@ -113,21 +113,21 @@ public class TapeViewer extends JComponent
     		                + metrics.getAscent(); //+ 1  * 0.5 -> ceil  
     top = boxSize;
     bottom = 2 * boxSize;
-    int headerSize = boxSize/2;
-    int translate = (boxSize-headerSize)/2;
-    headerSize += headerSize % 2; // headerSize should be even
-    int[] px = {0, headerSize, headerSize, headerSize/2, 0};
-    int[] py = {0, 0, headerSize/2, headerSize, headerSize/2};
+    int headSize = boxSize/2;
+    int translate = (boxSize-headSize)/2;
+    headSize += headSize % 2; // headSize should be even
+    int[] px = {0, headSize, headSize, headSize/2, 0};
+    int[] py = {0, 0, headSize/2, headSize, headSize/2};
     arrowDownPoly = new Polygon(px, py, 5);
     arrowDownPoly.translate(translate, translate);
     
-    px = new int[]{headerSize/2, headerSize, headerSize, headerSize/2, 0};
-    py = new int[]{0, 0, headerSize, headerSize, headerSize/2};
+    px = new int[]{headSize/2, headSize, headSize, headSize/2, 0};
+    py = new int[]{0, 0, headSize, headSize, headSize/2};
     arrowLeftPoly = new Polygon(px, py, 5);
     arrowLeftPoly.translate(translate, translate);
     
-    px = new int[]{0, headerSize/2, headerSize, headerSize/2, 0};
-    py = new int[]{0, 0, headerSize/2, headerSize, headerSize};
+    px = new int[]{0, headSize/2, headSize, headSize/2, 0};
+    py = new int[]{0, 0, headSize/2, headSize, headSize};
     arrowRightPoly = new Polygon(px, py, 5);
     arrowRightPoly.translate(translate, translate);
 
@@ -138,7 +138,7 @@ public class TapeViewer extends JComponent
     
     //Number with biggest distance to pos (mind the overflow!)
     firstCell = tape.getPos() + Integer.MAX_VALUE;
-    //Centers the header, when painted the first time
+    //Centers the head, when painted the first time
     scrollMode = SCROLL_IMMEDIATE;
   }
   
@@ -199,22 +199,22 @@ public class TapeViewer extends JComponent
     xFirstBox = croppedBoxWidth - boxSize;
 
     //scroll
-    final int headerCell = tape.getPos();
+    final int headCell = tape.getPos();
     if (scrollMode == SCROLL_NONE) {
-      headerBox = headerCell - firstCell;      
+      headBox = headCell - firstCell;      
     } else if (scrollMode == SCROLL_BORDERS) {
-      if (headerCell < firstCell + scrollBorder) {
-        firstCell = headerCell - scrollBorder;
-      } else if (headerCell > firstCell + paintedBoxes - 1 - scrollBorder) {
-        firstCell = headerCell - paintedBoxes + 1 + scrollBorder;
+      if (headCell < firstCell + scrollBorder) {
+        firstCell = headCell - scrollBorder;
+      } else if (headCell > firstCell + paintedBoxes - 1 - scrollBorder) {
+        firstCell = headCell - paintedBoxes + 1 + scrollBorder;
       }
-      headerBox = headerCell - firstCell;
+      headBox = headCell - firstCell;
     } else if (scrollMode == SCROLL_IMMEDIATE) {
-      // center header, if not fully visible
-      if (headerBox <= 0 || headerBox >= paintedBoxes-1) {
-        headerBox = paintedBoxes / 2;
+      // center head, if not fully visible
+      if (headBox <= 0 || headBox >= paintedBoxes-1) {
+        headBox = paintedBoxes / 2;
       }
-      firstCell = headerCell - headerBox; 
+      firstCell = headCell - headBox; 
     }
 
     char[] chars = tape.read(firstCell, paintedBoxes);
@@ -237,25 +237,24 @@ public class TapeViewer extends JComponent
     g.drawLine(0, top, getWidth()-1, top);
     g.drawLine(0, bottom, getWidth()-1, bottom);
     
-    //draw header
-    if (headerBox <= 0) {
-      g.setColor(bgColorHeader);
+    //draw head
+    if (headBox <= 0) {
+      g.setColor(bgColorHead);
       arrowLeftPoly.translate(croppedBoxWidth, 0);
       g.drawPolygon(arrowLeftPoly);
       arrowLeftPoly.translate(-croppedBoxWidth, 0);
-    } else if (headerBox >= paintedBoxes-1) {
-      g.setColor(bgColorHeader);
+    } else if (headBox >= paintedBoxes-1) {
+      g.setColor(bgColorHead);
       int translate = getWidth() - croppedBoxWidth - boxSize;  
       arrowRightPoly.translate(translate, 0);
       g.drawPolygon(arrowRightPoly);
       arrowRightPoly.translate(-translate, 0);
     }
     // Maybe it's partially visible
-    if (partiallyVisible(headerBox)) {
-      int translate = xFirstBox + (headerCell - firstCell) * boxSize;
-      //int center = (int) (x + boxSize*0.5); //header's center (x)
+    if (partiallyVisible(headBox)) {
+      int translate = xFirstBox + (headCell - firstCell) * boxSize;
       arrowDownPoly.translate(translate, 0);
-      g.setColor(bgColorHeader);
+      g.setColor(bgColorHead);
       g.fillPolygon(arrowDownPoly);
       g.setColor(fgColor);
       g.drawPolygon(arrowDownPoly);
@@ -281,7 +280,7 @@ public class TapeViewer extends JComponent
     }
     // mark cell 0
     int box0 = -firstCell;
-    if (headerBox != box0 && partiallyVisible(box0)) {
+    if (headBox != box0 && partiallyVisible(box0)) {
       int x = xFirstBox + box0 * boxSize;
       //+1 ceils the number, which looks better,
       //because the border eats up space at the left side of the cell.
@@ -296,12 +295,12 @@ public class TapeViewer extends JComponent
       highlightedBox = hoveredBox;
       highlight = true;
     } else {
-      highlightedBox = headerBox;
-      highlight = fullyVisible(headerBox);
+      highlightedBox = headBox;
+      highlight = fullyVisible(headBox);
     }
     if (highlight) {
       int hx = xFirstBox + highlightedBox * boxSize; 
-      g.setColor(bgColorHeader);
+      g.setColor(bgColorHead);
       g.drawLine(hx, top-1, hx+boxSize, top-1);
       g.drawLine(hx, bottom+1, hx+boxSize, bottom+1);
       String s = Integer.toString(firstCell + highlightedBox);
@@ -392,9 +391,9 @@ public class TapeViewer extends JComponent
   public void scroll(int boxes) {
     if (boxes != 0) {
       firstCell -= boxes;
-      headerBox += boxes;
-      if (scrollMode == SCROLL_BORDERS && !inScrollArea(headerBox) ||
-          scrollMode == SCROLL_IMMEDIATE && !fullyVisible(headerBox)) {
+      headBox += boxes;
+      if (scrollMode == SCROLL_BORDERS && !inScrollArea(headBox) ||
+          scrollMode == SCROLL_IMMEDIATE && !fullyVisible(headBox)) {
         scrollMode = SCROLL_NONE;
         fireScrollModeChanged();
       }

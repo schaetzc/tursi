@@ -55,7 +55,7 @@ public class ArgsParser {
   public boolean parse(String args[]) {
     if (args.length == 0) { return false; }
     if (args.length >= 1) {
-      if (args[0].equals("-?")) {
+      if (args[0].equals("-?") || args[0].equals("-h") || args[0].equals("--help")) {
         printHelp = true;
         return false;
       }

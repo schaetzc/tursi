@@ -91,7 +91,7 @@ public class Tape {
 	
 	/**
 	 * Add a TapeListener to this tape. TapeListeners will be informed about
-	 * possible changes (values on this Tape and the position of it's header).
+	 * possible changes (values on this Tape and the position of its head).
 	 * @param tl TapeListener to be added.
 	 */
 	public void addTapeListener(TapeListener tl) {
@@ -110,14 +110,14 @@ public class Tape {
 	  listeners.remove(tl);
 	}
 	
-	/** Remove all TapeListeners fromm this tape. */
+	/** Remove all TapeListeners from this tape. */
 	public void removeAllTapeListener() {
     listeners.clear();
   }
 	
   /**
    * Inform all TapeListeners about a changed states (values on this tape and
-   * the position of it's header).
+   * the position of its head).
    * Mind, that you should check for real changes, before calling this method.
    */
 	public void fireTapeEvent() {

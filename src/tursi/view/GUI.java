@@ -42,7 +42,7 @@ public class GUI implements AliasConverter, StateTypeTester, PrefConsumer {
   private Parser curParser; // parser from currently opened tm-file
   
   private boolean ignoreCurStateChanges = false;
-  private boolean ignoreHeaderPosChanges = false;
+  private boolean ignoreHeadPosChanges = false;
   private final   AdaptiveTimer autoRunTimer;
   
   private final TapeListener  tapeListener;
@@ -91,10 +91,10 @@ public class GUI implements AliasConverter, StateTypeTester, PrefConsumer {
   private final FSlider speedSlider;
   private final JLabel lblCurState;
   private final StateCellRenderer curStateRenderer;
-  private final JComboBox curStateComboBox;
-  private final JLabel lblHeaderPos;
-  private final SpinnerNumberModel headerPosModel;
-  private final JSpinner headerPosSpinner;
+  private final JComboBox<String> curStateComboBox;
+  private final JLabel lblHeadPos;
+  private final SpinnerNumberModel headPosModel;
+  private final JSpinner headPosSpinner;
   private final JLabel lblSteps;
   private final JLabel valSteps;
   private final JLabel lblLeftmostCell;
@@ -185,7 +185,7 @@ public class GUI implements AliasConverter, StateTypeTester, PrefConsumer {
     };
     tapeListener = new TapeListener() {
       @Override public void tapeChanged() {
-        headerPosModel.setValue(tape.getPos());
+        headPosModel.setValue(tape.getPos());
         valLeftmostCell.setText(Integer.toString(tape.getLeftmost()));
         valRightmostCell.setText(Integer.toString(tape.getRightmost()));
       }
@@ -246,14 +246,14 @@ public class GUI implements AliasConverter, StateTypeTester, PrefConsumer {
     speedSlider         = new FSlider(1000, 250);
     speedSlider.setInverted(true);
     lblCurState         = new JLabel("Current State");
-    curStateComboBox    = new JComboBox();
+    curStateComboBox    = new JComboBox<>();
     curStateRenderer    = new StateCellRenderer(curStateComboBox, this);
     curStateComboBox.setRenderer(curStateRenderer);
     updateCurStateModel();
-    lblHeaderPos        = new JLabel("Header Position");
-    headerPosModel      = new SpinnerNumberModel(0, Integer.MIN_VALUE, Integer.MAX_VALUE, 1);
-    headerPosSpinner    = new JSpinner(headerPosModel);
-    Misc.setPlainNumEditor(headerPosSpinner);
+    lblHeadPos        = new JLabel("Head Position");
+    headPosModel      = new SpinnerNumberModel(0, Integer.MIN_VALUE, Integer.MAX_VALUE, 1);
+    headPosSpinner    = new JSpinner(headPosModel);
+    Misc.setPlainNumEditor(headPosSpinner);
     lblSteps            = new JLabel("Steps");
     valSteps            = new JLabel(Long.toString(history.steps()));
     lblLeftmostCell     = new JLabel("Leftmost Cell");
@@ -357,8 +357,8 @@ public class GUI implements AliasConverter, StateTypeTester, PrefConsumer {
         JLabel lbl1 = new JLabel("Tursi - Turing Machine Simulator");
         Font fnt = lbl1.getFont(); 
         lbl1.setFont(fnt.deriveFont(Font.BOLD, fnt.getSize()*1.15f));
-        JLabel lbl2 = new JLabel("Version 1.0");
-        JLabel lbl3 = new JLabel("2013-12-24");
+        JLabel lbl2 = new JLabel("Version 1.1");
+        JLabel lbl3 = new JLabel("2014-12-09");
         JPanel msg = Misc.makeBoxPanel(BoxLayout.Y_AXIS);
         msg.add(lbl1);
         msg.add(Box.createVerticalGlue());
@@ -575,9 +575,9 @@ public class GUI implements AliasConverter, StateTypeTester, PrefConsumer {
         processCurStateChange();
       }
     });
-    headerPosModel.addChangeListener(new ChangeListener() {
+    headPosModel.addChangeListener(new ChangeListener() {
       @Override public void stateChanged(ChangeEvent e) {
-        processHeaderPosChange();
+        processHeadPosChange();
       }
     });
     
@@ -603,7 +603,7 @@ public class GUI implements AliasConverter, StateTypeTester, PrefConsumer {
         }
       }
     };
-    MouseListener jumpHeader = new MouseAdapter() {
+    MouseListener jumpHead = new MouseAdapter() {
       @Override public void mousePressed(MouseEvent e) {
         if (e.getButton() == MouseEvent.BUTTON1) {
           tapeViewer.scrollTo(tape.getPos());          
@@ -616,7 +616,7 @@ public class GUI implements AliasConverter, StateTypeTester, PrefConsumer {
     valRightmostCell.addMouseListener(jumpRightmost);
     lblInitialCell.addMouseListener(jumpInitial);
     valInitialCell.addMouseListener(jumpInitial);
-    lblHeaderPos.addMouseListener(jumpHeader);
+    lblHeadPos.addMouseListener(jumpHead);
   }
   
   private void setMenuAccelerators() {
@@ -839,7 +839,7 @@ public class GUI implements AliasConverter, StateTypeTester, PrefConsumer {
     c.gridy = 4;
     p.add(lblCurState, c);
     c.gridy = 5;
-    p.add(lblHeaderPos, c);
+    p.add(lblHeadPos, c);
     c.gridy = 7;
     p.add(lblSteps, c);
     c.gridy = 8;
@@ -857,7 +857,7 @@ public class GUI implements AliasConverter, StateTypeTester, PrefConsumer {
     c.gridy = 4;
     p.add(curStateComboBox, c);
     c.gridy = 5;
-    p.add(headerPosSpinner, c);
+    p.add(headPosSpinner, c);
     c.gridy = 7;
     p.add(valSteps, c);
     c.gridy = 8;
@@ -881,9 +881,9 @@ public class GUI implements AliasConverter, StateTypeTester, PrefConsumer {
   private void setToolTips() {
     histIncompMarker.setToolTipText("Some of the oldest steps were discarded");
     btnClearHist.setToolTipText("Clear history");
-    btnScrollNone.setToolTipText("Don't scroll with header");
-    btnScrollBorders.setToolTipText("Scroll with header when at border");
-    btnScrollImmediate.setToolTipText("Immediately scroll with header");
+    btnScrollNone.setToolTipText("Don't scroll with head");
+    btnScrollBorders.setToolTipText("Scroll with head when at border");
+    btnScrollImmediate.setToolTipText("Immediately scroll with head");
     btnResetTape.setToolTipText("Reset tape");
     writeValuesField.setToolTipText("Word to be written onto the tape");
     btnTapeWriteTowards.setToolTipText(
@@ -905,19 +905,19 @@ public class GUI implements AliasConverter, StateTypeTester, PrefConsumer {
     speedChangeListener.stateChanged(null);
     speedSlider.addChangeListener(speedChangeListener);
     curStateComboBox.setToolTipText("Current state");
-    headerPosSpinner.setToolTipText("Current header position");
-    String headerTT = "Current header position - click to view";
-    lblHeaderPos.setToolTipText(headerTT);
+    headPosSpinner.setToolTipText("Current head position");
+    String headTT = "Current head position - click to view";
+    lblHeadPos.setToolTipText(headTT);
     String stepsTT = "Taken steps";
     lblSteps.setToolTipText(stepsTT);
     valSteps.setToolTipText(stepsTT);
-    String leftTT = "Leftmost cell accessed by header - click to view";
+    String leftTT = "Leftmost cell accessed by head - click to view";
     lblLeftmostCell.setToolTipText(leftTT);
     valLeftmostCell.setToolTipText(leftTT);
-    String rightTT = "Rightmost cell accessed by header - click to view";
+    String rightTT = "Rightmost cell accessed by head - click to view";
     lblRightmostCell.setToolTipText(rightTT);
     valRightmostCell.setToolTipText(rightTT);
-    String initTT = "Cell where the header started - click to view";
+    String initTT = "Cell where the head started - click to view";
     lblInitialCell.setToolTipText(initTT);
     valInitialCell.setToolTipText(initTT);
   }
@@ -1033,9 +1033,9 @@ public class GUI implements AliasConverter, StateTypeTester, PrefConsumer {
       return true;
     } else {
       ignoreCurStateChanges = true;
-      ignoreHeaderPosChanges = true;
+      ignoreHeadPosChanges = true;
       machine.undo();
-      ignoreHeaderPosChanges = false;
+      ignoreHeadPosChanges = false;
       ignoreCurStateChanges = false;
       return false;
     }
@@ -1044,13 +1044,13 @@ public class GUI implements AliasConverter, StateTypeTester, PrefConsumer {
   private boolean stepForwardsIntern() {
     try {
       ignoreCurStateChanges = true;
-      ignoreHeaderPosChanges = true;
+      ignoreHeadPosChanges = true;
       machine.step();
     } catch (RuleNotFoundException e) {
       dispRuleNotFound(e.getTrigger());
       return true;
     } finally {
-      ignoreHeaderPosChanges = false;
+      ignoreHeadPosChanges = false;
       ignoreCurStateChanges = false; 
     }
     return false;
@@ -1058,7 +1058,7 @@ public class GUI implements AliasConverter, StateTypeTester, PrefConsumer {
   
   public void setAutoRun(boolean run) {
     curStateComboBox.setEnabled(!run);
-    headerPosSpinner.setEnabled(!run);
+    headPosSpinner.setEnabled(!run);
     if (autoRunTimer.isRunning() == run) {
       if (run) {
         String msg = "Auto run thread has already started!"; 
@@ -1095,13 +1095,13 @@ public class GUI implements AliasConverter, StateTypeTester, PrefConsumer {
     ignoreCurStateChanges = false;      
   }
 
-  private void processHeaderPosChange() {
-    if (ignoreHeaderPosChanges) { return; }
+  private void processHeadPosChange() {
+    if (ignoreHeadPosChanges) { return; }
     setAutoRun(false);
     history.clear();
-    ignoreHeaderPosChanges = true;
-    tape.setPos(headerPosModel.getNumber().intValue());
-    ignoreHeaderPosChanges = false;
+    ignoreHeadPosChanges = true;
+    tape.setPos(headPosModel.getNumber().intValue());
+    ignoreHeadPosChanges = false;
   }
   
   //----- menu functionality ---------------------------------------------------
@@ -1163,11 +1163,11 @@ public class GUI implements AliasConverter, StateTypeTester, PrefConsumer {
     updateValWildcard();
     ruleTableModel.setValues(p.getRules());
     ignoreCurStateChanges = true;
-    ignoreHeaderPosChanges = true;
+    ignoreHeadPosChanges = true;
     updateCurStateModel();
     machine.fireStateEvent(); 
-    tape.fireTapeEvent(); // updates tapeViewer and headerPosSpinner 
-    ignoreHeaderPosChanges = false;
+    tape.fireTapeEvent(); // updates tapeViewer and headPosSpinner 
+    ignoreHeadPosChanges = false;
     ignoreCurStateChanges = false;
   }
 
@@ -1179,11 +1179,11 @@ public class GUI implements AliasConverter, StateTypeTester, PrefConsumer {
       states[i++] = st;
     }
     Arrays.sort(states);
-    curStateComboBox.setModel(new DefaultComboBoxModel(states)); 
+    curStateComboBox.setModel(new DefaultComboBoxModel<String>(states)); 
     curStateComboBox.setSelectedItem(machine.getState());
   }
   
-  //Test file before reading, for detailed error message
+  // Test file before reading, for detailed error message
   private boolean testFileRead(File f) {
     boolean fileMissing      = !f.exists();
     boolean permissionDenied = !f.canRead();
@@ -1224,9 +1224,9 @@ public class GUI implements AliasConverter, StateTypeTester, PrefConsumer {
     machine.setTape(tape);
     
     // update GUI
-    ignoreHeaderPosChanges = true;
+    ignoreHeadPosChanges = true;
     tape.fireTapeEvent();
-    ignoreHeaderPosChanges = false;
+    ignoreHeadPosChanges = false;
   }
   
   public File saveFileDialog(String suggestedFileName, String extDetail, String ext) {

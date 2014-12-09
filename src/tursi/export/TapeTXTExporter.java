@@ -8,11 +8,16 @@ public class TapeTXTExporter {
   
   private final String ln = String.format("%n"); 
   private final boolean rangeInfo;
-  private final boolean headerInfo;
+  private final boolean headInfo;
   
-  public TapeTXTExporter(boolean rangeInfo, boolean headerInfo) {
+  /**
+   * Create a new txt export filter.
+   * @param rangeInfo Print informations about the printed section of the tap (e.g. range). 
+   * @param headInfo Print informations about the read/write head (e.g. current position).
+   */
+  public TapeTXTExporter(boolean rangeInfo, boolean headInfo) {
     this.rangeInfo = rangeInfo;
-    this.headerInfo = headerInfo;
+    this.headInfo = headInfo;
   }
   
   public void export(Writer w, Tape tape, int start, int length)
@@ -26,12 +31,12 @@ public class TapeTXTExporter {
       int end = start + length - 1;
       w.write("tape (" + start + ", " + length + ", " + end + ")");
     }
-    if (rangeInfo && headerInfo) { w.write(", "); }
-    if (headerInfo) { w.write("header " + tape.getPos()); }
-    if (rangeInfo || headerInfo) { w.write(ln); }
+    if (rangeInfo && headInfo) { w.write(", "); }
+    if (headInfo) { w.write("head " + tape.getPos()); }
+    if (rangeInfo || headInfo) { w.write(ln); }
     
-    int sec1First, sec1Length; // section with negativ cells
-    int sec2First, sec2Length; // section with non-negativ cells
+    int sec1First, sec1Length; // section with negative cells
+    int sec2First, sec2Length; // section with non-negative cells
     if (start < 0) {
       sec1First = start;
       sec2First = 0;

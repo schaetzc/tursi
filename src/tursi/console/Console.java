@@ -45,7 +45,11 @@ public class Console {
     } else if (p.isConsoleMode()) {
       Console c = new Console(p);
       c.run();
-    } else {
+    } else { 
+      if ("-c".equals(p.getFile())) {
+        // In case, user didn't meant file "-c" but the option for console mode.
+        System.out.println("Hint: Use \'tursi <file> -c\', if you meant console mode.");   	  
+      }
       openGUI(p.getFile());
     }
   }
@@ -207,7 +211,7 @@ public class Console {
     out.print(right - left + 1);
     out.print(", ");
     out.print(right);
-    out.print("), header ");
+    out.print("), head ");
     out.println(tape.getPos());
     out.print('\t');
     out.print(tape.read(tape.getLeftmost(), -tape.getLeftmost()));

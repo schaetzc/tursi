@@ -9,16 +9,16 @@ import tursi.view.AliasConverter;
 public class HistTSVExporter {
 
   private final String ln = String.format("%n"); 
-  private final boolean header;
+  private final boolean head;
   private final AliasConverter conv;
   
-  public HistTSVExporter(boolean header, AliasConverter conv) {
-    this.header = header;
+  public HistTSVExporter(boolean head, AliasConverter conv) {
+    this.head = head;
     this.conv   = conv;
   }
   
   public void export(Writer w, LimitedHistory hist) throws IOException {
-    if (header) {
+    if (head) {
       w.write("step\tlast state\tread\twrite\tmove\tstate" + ln);
     }
     for (int i = 0; i < hist.size(); ++i) {
