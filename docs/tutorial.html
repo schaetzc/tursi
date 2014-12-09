@@ -43,8 +43,8 @@
         Our turing machine has
       </p>
       <ul>
-        <li>One tape with cells. There are infinite cells in both directions</li>
-        <li>One header, which moves over the tape and can read and write symbols</li>
+        <li>A tape with cells. There are infinite cells in both directions</li>
+        <li>A head, which moves over the tape and can read and write symbols</li>
         <li>A set of states, a subset of end states and one initial state</li>
         <li>A state register, where the current state is stored</li>
         <li>A deterministic transition function (represented by a table)</li>
@@ -53,7 +53,7 @@
         A special alphabet is not required. We just use all available symbols.
       </p><p>
         The transition function takes the current state and the symbol under the
-        header as input. It returns a further symbol, a direction and a state.
+        head as input. It returns a further symbol, a direction and a state.
         Therefore, our table has 5 columns. We call its lines <i>rules</i>. <br>
         As mentioned above, it must be deterministic. So that there's at most one
         output for each input. On the other side, you don't have do define an
@@ -61,11 +61,11 @@
       </p><p>
         Our machine starts with the initial state and calls the transition
         function (basically, it searches the table). The output symbol will be
-        written over the current position. Then, the header will move in the
+        written over the current position. Then, the head will move in the
         indicated direction (it can also stay, where it was). Finally the
         current state will be changed. <br>
         This steps are repeated, until no rule for the current state and symbol
-        under the header was found or an end state was reached.
+        under the head was found or an end state was reached.
       </p><p>
         When the machine has stopped, you can read what it wrote on the tape
         and in which state it ended. Tursi just executes the machine and does
@@ -77,9 +77,9 @@
       <p>
         Normally the cells on the tape aren't numbered, but we will number them,
         because it's easier to talk about <i>cell n</i> instead of <i>the cell,
-        which lies n cells to right of the initial header position</i>. <br>
+        which lies n cells to right of the initial head position</i>. <br>
       </p><p>
-        0 is the cell where the header was, as we started the turing machine.
+        0 is the cell where the head was, as we started the turing machine.
         We count upwards, when moving right and backwards when moving left.
       </p>
 
@@ -193,12 +193,12 @@
           <ul>
             <li>
               <u>-1</u> or one of <u>lL&lt;</u><br>
-              moves the header one cell to the left
+              moves the head one cell to the left
             </li><li>
               <u>0</u> or one of <u>nNsS=</u><br>
-              keeps the header on the current position
+              keeps the head on the current position
             </li><li><u>1</u> or one of <u>rR&gt;</u><br>
-              moves the header one cell to the right
+              moves the head one cell to the right
             </li>
           </ul>
         </li>
@@ -272,14 +272,14 @@
       <p>
         When working with turing machines, that read or write long words, your
         tape will not fit into the window. In such cases Tursi can follow the
-        header as it moves. You can also  scroll manually with your cursor.
+        head as it moves. You can also  scroll manually with your cursor.
         Hold and drag the tape or make use of your mouse wheel.<br>
         You can change between manual and two different automatic scroll modes.
         Just press one of the three buttons on the top right.
       </p><p>
         There are four special cells, which are marked in the tape viewer.
-        The cell under the header, the leftmost and rightmost cell ever accessed
-        and the cell, where the header has started (0).
+        The cell under the head, the leftmost and rightmost cell ever accessed
+        and the cell, where the head has started (0).
         To jump to one of them, click onto the according labels down right.
       </p>
       
@@ -315,7 +315,7 @@
         Since you won't be able to modify the tape in console mode, you have
         to use the <u>write</u> command in your tm-file. It writes something onto
         the tape, before the machine is executed. The machine is not affected by
-        this command (especially the header does not move).
+        this command (especially the head does not move).
       </p><p>
         You can use <u>write</u> multiple times or even write multiple times
         with only one call of <u>write</u>. The commands will be executed in the
@@ -327,11 +327,11 @@
       <ul>
         <li><u>write &lt;word&gt;</u><br>
           Writes the specified word from left to right onto the tape, starting
-          from the cell 0 (where the header is on startup).<br>
+          from the cell 0 (where the head is on startup).<br>
         </li>
         <li><u>write &lt;position&gt; &lt;word&gt; [...]</u><br>
           Writes the word starting from the specified position (an integer).
-          Positive positions are right to the header and negative ones are left.
+          Positive positions are right to the head and negative ones are left.
           <br>
           You can specify as many pairs of positions and words as you like.
         </li>
@@ -376,7 +376,7 @@
         (let <u class="tab">\t</u> be a tabulator)
       </p><p class="code">
         57<u class="tab">\t</u>q<br>
-        <u class="tab"> &nbsp; \t</u>tape (-3, 11, 7), header 4<br>
+        <u class="tab"> &nbsp; \t</u>tape (-3, 11, 7), head 4<br>
         <u class="tab"> &nbsp; \t</u>xyz<br>
         <u class="tab"> &nbsp; \t</u>abcdefgh
       </p><p>
@@ -384,7 +384,7 @@
         At this time, the leftmost cell ever accessed was <u>-3</u> and the
         rightmost cell ever accessed was <u>7</u>. Cells that were never reached,
         will not be printed. So the printed tape contains 11 cells.<br>
-        The header is currently on cell <u>4</u> (reads <u>e</u>, because
+        The head is currently on cell <u>4</u> (reads <u>e</u>, because
         <u>a</u> is in cell <u>0</u>).<br>
         The last two lines are the tape. The first is the part left from cell 0.
         The second is the part from cell on to the right (including cell 0).<br>
@@ -419,7 +419,7 @@
           <ul>
             <li><u>s</u> &emsp;Print the step number and current state
             </li>
-            <li><u>t</u> &emsp;Print the tape (including header position)
+            <li><u>t</u> &emsp;Print the tape (including head position)
             </li>
             <li><u>r</u> &emsp;Print the next executed rule (if there is one)
             </li>
@@ -498,7 +498,7 @@
         q1 ? ? R q2 # this rule moves to right, without changing the tape 
       </p><p>
         Rules with wildcards will only be executed, if no other rule matches
-        the current state and symbol under the header. You can see it as a
+        the current state and symbol under the head. You can see it as a
         fallback.
       </p><p class="code">
         #! wildcard ?<br>

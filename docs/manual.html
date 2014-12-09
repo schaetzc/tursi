@@ -218,31 +218,39 @@
         All input pairs must be unique.
       </p><p>
         In every step, the turing machine searches the table for a input
-        that matches its current state and symbol under the header.
+        that matches its current state and symbol under the head.
         When found, the three remaining fields (output) are applied in the
         following order: The current cell is overwritten with <i>write</i>,
-        the header moves <i>move</i> cells to the right (this means, negative
-        numbers move it to the left), the machine changes it state to
+        the head moves <i>move</i> cells to the right (this means, negative
+        numbers let it move to the left), the machine changes it state to
         <i>next&nbsp;state</i>.
       </p>
       
       <h2>Graphical User Interface</h2>
-      <img src="img/gui-sections.png" alt="Sections of the GUI" class="center">
-      
-      <h3>[A] Tape Viewer</h3>
+      <img src="img/gui-sections.png" alt="sections of the gui" class="center" usemap="#gui-section-map">
+      <map name="gui-section-map">
+        <area shape="poly" href="#gui-sec-a" alt="tape viewer" coords="587,42,0,43,0,95,465,91,463,118,530,118,531,89,587,91">
+        <area shape="rect" href="#gui-sec-b" alt="rule table" coords="44,94,224,397">
+        <area shape="rect" href="#gui-sec-c" alt="history" coords="226,93,403,397">
+        <area shape="rect" href="#gui-sec-d" alt="statistics"  coords="405,263,585,397">
+        <area shape="rect" href="#gui-sec-e" alt="tm control panel" coords="404,178,630,260">
+        <area shape="poly" href="#gui-sec-f" alt="tape control panel" coords="404,91,405,176,633,176,630,93,535,92,534,119,462,117,464,92">
+      </map>
+
+      <h3><a id="gui-sec-a">[A]</a> Tape Viewer</h3>
       <p>
         Shows the tape of the turing machine.
       </p><p>
         Special cells are marked. These are the leftmost cell accessed by
-        the header since the last tape reset (1), the cell where the header
-        started (2), the current position of the header (3) and the rightmost
+        the head since the last tape reset (1), the cell where the head
+        started (2), the current position of the head (3) and the rightmost
         cell (4).<br>
         Move the mouse over a cell to show its number.
       </p><p>
         Scroll the tape manually using the mouse wheel or simply click and drag
         the tape.<br>
         The viewer also offers different scroll modes, which can follow the
-        header as it moves:
+        head as it moves:
       </p>
       <table class="manualBig">
         <tr>
@@ -253,14 +261,14 @@
           <td><img src="img/icons/scroll_none.png" alt="scroll none"></td>
           <td>None</td>
           <td>
-            Don't follow the header at all.
+            Don't follow the head at all.
           </td>
         </tr>
         <tr>
           <td><img src="img/icons/scroll_borders.png" alt="scroll borders"></td>
           <td>Borders</td>
           <td>
-            Follow the header, but only when it is about to move out of the
+            Follow the head, but only when it is about to move out of the
             visible section.
           </td>
         </tr>
@@ -268,13 +276,13 @@
           <td><img src="img/icons/scroll_immediate.png" alt="scroll immediate"></td>
           <td>Immediate</td>
           <td>
-            Immediately follow the header. This looks like the header would
+            Immediately follow the head. This looks like the head would
             stay at its place and the tape would move under it.
           </td>
         </tr>
       </table>
       
-      <h3>[B] Rule Table</h3>
+      <h3><a id="gui-sec-b">[B]</a> Rule Table</h3>
       <p>
         These are the rules, that where loaded from the last successfully opened
         tm-file. They always have the order from the file.
@@ -289,7 +297,7 @@
         If a wildcard was defined, it is shown at the top.
       </p>
 
-      <h3>[C] History</h3>
+      <h3><a id="gui-sec-c">[C]</a> History</h3>
       <p>
         If a rule was executed, it is written to the end of the history.
         The number of that step is also stored (first column).
@@ -305,7 +313,7 @@
         clears the history.
       </p>
 
-      <h3>[D] Statistics</h3>
+      <h3><a id="gui-sec-d">[D]</a> Statistics</h3>
       <p>
         These are some statistics. They reset with certain manual changes (e.g.
         writing something onto the tape, changing the current state and so on).
@@ -316,7 +324,7 @@
         will always be 0.
       </p>
 
-      <h3>[E] Turing Machine Control Panel</h3>
+      <h3><a id="gui-sec-e">[E]</a> Turing Machine Control Panel</h3>
       <p>
         This is the most important control panel. It lets you execute your turing
         machine.
@@ -333,7 +341,7 @@
           <td>Backspace</td>
           <td>
             Set the state to the start state.
-            This doesn't reset the tape and the header position.
+            This doesn't reset the tape and the head position.
           </td>
         </tr>
         <tr>
@@ -384,15 +392,15 @@
         This is not the pause time! The real pause time is shown in a tooltip.
         Place your mouse over the slider and stand still.
       </p><p>
-        Below, you can change the current state and position of the header.<br>
+        Below, you can change the current state and position of the head.<br>
         The list of possible states is generated from the loaded tm-file.
         All states from the transition table and from the commands
         <u>start</u>, <u>break</u> and <u>end</u> are included.
       </p><p class="warning">
-        Changing the state or header position resets the history!
+        Changing the state or head position resets the history!
       </p>
 
-      <h3>[F] Tape Control Panel</h3>
+      <h3><a id="gui-sec-f">[F]</a> Tape Control Panel</h3>
       <p>
         This panel lets you modify the tape.
       </p><p class="warning">
@@ -610,17 +618,17 @@
         <tr>
           <td><u>t</u></td>
           <td>
-            Print the tape and header position after the state was reached.<br>
+            Print the tape and head position after the state was reached.<br>
             The printed tape section goes from the leftmost cell ever reached
-            by the header to the rightmost cell.<br>
+            by the head to the rightmost cell.<br>
             The output is splitted into 3 lines. A short information about
             the printed tape section, negative cells (left part, seen from
             cell 0) and non-negative cells (right part), including cell 0.
             <br>
-            If the tape contained 'xyzabcdefgh' and the header was at cell 4,
+            If the tape contained 'xyzabcdefgh' and the head was at cell 4,
             the following lines would be printed:
             <p class="code">
-              <u class="tab">\t</u>tape (-3, 11, 7), header 4<br>
+              <u class="tab">\t</u>tape (-3, 11, 7), head 4<br>
               <u class="tab">\t</u>xyz<br>
               <u class="tab">\t</u>abcdefgh
             </p>
