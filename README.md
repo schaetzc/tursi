@@ -15,14 +15,14 @@ However, I publish it here in the hope that it will be useful to someone.
 ## Features
 
 - Cross-platform Java application
-- Debug your Turing machine with history and break states
-- Export Turing tables to state diagrams
+- Debug Turing machines with history and break states
+- Export transition tables to state diagrams
 - Fast console mode for time-consuming Turing machines
-- Wildcards for the transition table
+- Compact transition tables using wildcards
 
 ## Using Tursi
 
-- Download the `.jar` file from the latest release.
+- Download the `.jar` file from the [latest release](https://github.com/schaetzc/tursi/releases).
 - Install a Java Runtime Environment (JRE 8 or higher) if you haven't already.
 	- Windows users should be able to start it by simply double clicking the `.jar` file.
 	- Linux users may have to make the file executable first  
