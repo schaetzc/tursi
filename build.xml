@@ -1,0 +1,31 @@
+<project name="Tursi" default="jar">
+
+	<target name="clean">
+		<delete dir="classes" />
+		<delete dir="bin" />
+	</target>
+
+	<target name="compile" depends="clean">
+		<mkdir dir="classes" />
+		<javac srcdir="src" destdir="classes" release="8" includeantruntime="false" />
+		<copy todir="classes/tursi/view/icons/">
+			<fileset dir="src/tursi/view/icons/">
+				<exclude name="*.java"/>
+			</fileset>
+		</copy>
+	</target>
+
+	<target name="jar" depends="compile">
+		<mkdir dir="bin" />
+		<jar destfile="bin/Tursi.jar" basedir="classes">
+			<manifest>
+				<attribute name="Main-Class" value="tursi.console.Console" />
+			</manifest>
+		</jar>
+	</target>
+
+	<target name="run" depends="jar">
+		<java jar="bin/Tursi.jar" fork="true" />
+	</target>
+
+</project>
