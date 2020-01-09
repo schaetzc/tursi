@@ -15,9 +15,9 @@ However, I publish it here in the hope that it will be useful to someone.
 ## Features
 
 - Cross-platform Java application
-- Debug your turing machine with history and break states
-- Export turing tables to state diagrams
-- Fast console mode for time-consuming turing machines
+- Debug your Turing machine with history and break states
+- Export Turing tables to state diagrams
+- Fast console mode for time-consuming Turing machines
 - Wildcards for the transition table
 
 ## Using Tursi
