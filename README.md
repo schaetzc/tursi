@@ -20,7 +20,7 @@ However, I publish it here in the hope that it will be useful to someone.
 - Fast console mode for time-consuming Turing machines
 - Compact transition tables using wildcards
 
-## Using Tursi
+## Use
 
 - Download the `.jar` file from the [latest release](https://github.com/schaetzc/tursi/releases).
 - Install a Java Runtime Environment (JRE 8 or higher) if you haven't already.
@@ -35,7 +35,7 @@ For a quick start you may also want to look at the
 [examples](https://schaetzc.github.io/tursi/dnld/tm-examples.zip)
 in the [download section](https://schaetzc.github.io/tursi/downloads.html).
 
-## Compiling
+## Compile
 
 Tursi's first version was written in Java 1.6. Tursi itself hasn't changed much since then, but I made sure
 that it can be compiled flawlessly with newer Java versions. Tursi's current version was tested with
