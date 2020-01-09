@@ -357,8 +357,8 @@ public class GUI implements AliasConverter, StateTypeTester, PrefConsumer {
         JLabel lbl1 = new JLabel("Tursi - Turing Machine Simulator");
         Font fnt = lbl1.getFont(); 
         lbl1.setFont(fnt.deriveFont(Font.BOLD, fnt.getSize()*1.15f));
-        JLabel lbl2 = new JLabel("Version 1.1");
-        JLabel lbl3 = new JLabel("2014-12-09");
+        JLabel lbl2 = new JLabel("Version 1.2");
+        JLabel lbl3 = new JLabel("2020-01-09");
         JPanel msg = Misc.makeBoxPanel(BoxLayout.Y_AXIS);
         msg.add(lbl1);
         msg.add(Box.createVerticalGlue());
@@ -373,7 +373,7 @@ public class GUI implements AliasConverter, StateTypeTester, PrefConsumer {
 
     menuHelpWebsite.addActionListener(new ActionListener() {
       private final String url =
-          "http://ais.informatik.uni-freiburg.de/tursi/";
+          "https://schaetzc.github.io/tursi/";
       @Override public void actionPerformed(ActionEvent e) {
         try {
           Desktop.getDesktop().browse(new java.net.URI(url));
